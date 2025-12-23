@@ -12,10 +12,11 @@ import Regulations from "./pages/Regulations";
 import Blog from "./pages/Blog";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import Dashboard from "./pages/Dashboard"; // Import Dashboard page
+import ForgotPasswordPage from "./pages/ForgotPasswordPage"; // Import ForgotPasswordPage
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
-import { AuthProvider } from "./contexts/AuthContext"; // Import AuthProvider
-import ProtectedRoute from "./components/ProtectedRoute"; // Import ProtectedRoute
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +26,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider> {/* Wrap everything that needs auth context */}
+        <AuthProvider>
           <Layout>
             <Routes>
               <Route path="/" element={<Index />} />
@@ -35,11 +36,12 @@ const App = () => (
               <Route path="/regulations" element={<Regulations />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} /> {/* Forgot Password Route */}
 
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} /> {/* Dashboard Route */}
-                <Route path="/blog" element={<Blog />} /> {/* Blog Route */}
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/blog" element={<Blog />} />
                 {/* Add other protected routes here */}
               </Route>
 
