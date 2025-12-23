@@ -5,14 +5,41 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 const RegisterPage = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle registration logic here
-    console.log("Registration form submitted");
-    alert("Registration functionality requires a backend. Please integrate Supabase for authentication.");
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name, // You can store additional user data here
+        },
+      },
+    });
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Registration successful! Please check your email to confirm your account.");
+      navigate("/login"); // Redirect to login page after successful registration
+    }
   };
 
   return (
@@ -26,19 +53,45 @@ const RegisterPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="name">Full Name</Label>
-              <Input id="name" type="text" placeholder="John Doe" required />
+              <Input
+                id="name"
+                type="text"
+                placeholder="John Doe"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             <div>
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
             <div>
               <Label htmlFor="confirm-password">Confirm Password</Label>
-              <Input id="confirm-password" type="password" required />
+              <Input
+                id="confirm-password"
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
             </div>
             <Button type="submit" className="w-full">
               Register
@@ -51,7 +104,7 @@ const RegisterPage = () => {
             </Link>
           </div>
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            Note: This registration form is for demonstration. Full authentication requires a backend integration (e.g., Supabase).
+            Note: This registration form now uses Supabase for authentication.
           </div>
         </CardContent>
       </Card>

@@ -5,14 +5,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 const LoginPage = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login form submitted");
-    alert("Login functionality requires a backend. Please integrate Supabase for authentication.");
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Logged in successfully!");
+      navigate("/"); // Redirect to home page on successful login
+    }
   };
 
   return (
@@ -26,11 +40,24 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             <div>
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
             <Button type="submit" className="w-full">
               Login
@@ -48,7 +75,7 @@ const LoginPage = () => {
             </Link>
           </div>
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            Note: This login form is for demonstration. Full authentication requires a backend integration (e.g., Supabase).
+            Note: This login form now uses Supabase for authentication.
           </div>
         </CardContent>
       </Card>
