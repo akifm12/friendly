@@ -12,12 +12,10 @@ import Regulations from "./pages/Regulations";
 import Blog from "./pages/Blog";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/Dashboard"; // Import Dashboard page
 import NotFound from "./pages/NotFound";
-import { AuthProvider } from "./contexts/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-import CreateBlogPostPage from "./pages/CreateBlogPostPage"; // Import new page
-import BlogPostPage from "./pages/BlogPostPage"; // Import new page
+import { AuthProvider } from "./contexts/AuthContext"; // Import AuthProvider
+import ProtectedRoute from "./components/ProtectedRoute"; // Import ProtectedRoute
 
 const queryClient = new QueryClient();
 
@@ -27,7 +25,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
+        <AuthProvider> {/* Wrap everything that needs auth context */}
           <Layout>
             <Routes>
               <Route path="/" element={<Index />} />
@@ -40,13 +38,10 @@ const App = () => (
 
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/blog/create" element={<CreateBlogPostPage />} /> {/* Protected route for creating posts */}
+                <Route path="/dashboard" element={<Dashboard />} /> {/* Dashboard Route */}
+                <Route path="/blog" element={<Blog />} /> {/* Blog Route */}
+                {/* Add other protected routes here */}
               </Route>
-
-              {/* Public Blog Routes */}
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:id" element={<BlogPostPage />} /> {/* Route for individual blog posts */}
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
